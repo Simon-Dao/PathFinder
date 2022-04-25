@@ -7,6 +7,8 @@ package pathfinder.attempt.pkg2;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -24,40 +26,65 @@ public class Map
      * height of the map in rows
      */
     private int height;
-    
+
+    private int tileSize;
+
     // stores the coordinates of each node in the web
     private Node[][] nodes;
-    
-    private int scale;
+
+    private int[][] tileMap;
+
     private int startX;
     private int startY;
     private int goalX;
     private int goalY;
-    
-    //temp 
-    LinkedList<Node> path;
-    
-    /**
-     * 
-     * @param map 
-     */
-    public Map(int[][] map)
+
+    public Map(int width,int height)
     {
-        
-        this.width = map[0].length;
-        this.height = map.length;
-        
+
+        this.width = width;
+        this.height = height;
+        tileSize = Main.height / width;
+
+        tileMap = generateMap();
+
         nodes = new Node[width][height];
 
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                nodes[x][y] = new Node( x, y, map[x][y] == 0);
+                nodes[x][y] = new Node( x, y, tileMap[x][y] == 0);
             }
         }
     }
-    
+
+    public int[][] generateMap()
+    {
+        int[][] rmap = new int[width][height];
+
+        for (int i = 0; i < rmap.length; i++)
+        {
+            for (int j = 0; j < rmap.length; j++)
+            {
+                int walkable;
+                Random r = new Random();
+                double rand = r.nextDouble();
+
+                if (rand < .2)
+                {
+                    walkable = 1;
+                }
+                else
+                {
+                    walkable = 0;
+                }
+                rmap[i][j] = walkable;
+            }
+        }
+        return rmap;
+    }
+
     /**
      * 
      * @return 
@@ -66,7 +93,15 @@ public class Map
     {
         return width;
     }
-    
+
+    public int getTileSize() {
+        return tileSize;
+    }
+
+    public void setTileSize(int tileSize) {
+        this.tileSize = tileSize;
+    }
+
     /**
      * 
      * @return 
@@ -75,16 +110,7 @@ public class Map
     {
         return height;
     }
-    
-    public int getScale()
-    {
-        return scale;
-    }
-    
-    public void setScale(int scale)
-    {
-        this.scale = scale;
-    }
+
     /**
      * 
      * @param gc
@@ -92,6 +118,8 @@ public class Map
      */
     public void drawMap(GraphicsContext gc, List<Node> path)
     {
+        printMap(tileMap);
+
         for (int y = 0; y < height; y++)
         {
             for (int x = 0; x < width; x++)
@@ -117,7 +145,7 @@ public class Map
                 {
                     gc.setFill(Color.WHITE);
                 }
-                gc.fillRect((x * scale)+1, (y * scale)+1, scale-1, scale-1);
+                gc.fillRect((x * tileSize)+1, (y * tileSize)+1, tileSize-1, tileSize-1);
             }
         }
     }
@@ -166,8 +194,7 @@ public class Map
                     System.out.print("  w");
                 } 
                 else
-                {   
-                  
+                {
                     System.out.print("  .");
                 }
                 

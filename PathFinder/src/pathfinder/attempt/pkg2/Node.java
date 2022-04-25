@@ -100,14 +100,16 @@ public class Node
 	{
 		this.walkable = walkable;
 	}
-    	public Node getParent()
+    public Node getParent()
 	{
 		return parent;
 	}
+
 	public void setParent(Node parent)
 	{
 		this.parent = parent;
 	}
+
 	public int getF()
 	{
 		return g + h;

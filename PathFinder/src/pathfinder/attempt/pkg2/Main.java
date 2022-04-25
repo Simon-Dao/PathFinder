@@ -13,13 +13,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -33,8 +32,8 @@ import javafx.stage.Stage;
  */
 public class Main extends Application
 {   
-    private int width = 601;
-    private int height = 601;
+    public static int width = 601;
+    public static int height = 601;
  
     private boolean running = true;
     
@@ -57,15 +56,20 @@ public class Main extends Application
     {
         this.stage = stage;
         //set up scene 
-        StackPane gameScreen = new StackPane();
-        Canvas c = new Canvas(width,height);
-        gc = c.getGraphicsContext2D();
-        gameScreen.getChildren().add(c);
-        scene = new Scene(gameScreen,width,height);
+        BorderPane gameScreen = new BorderPane();
+        Canvas canvas = new Canvas(width,height);
+        gc = canvas.getGraphicsContext2D();
+        gameScreen.setCenter(canvas);
+
+        Pane buttonHolder = new Pane();
+        Button button = new Button("next");
+        buttonHolder.getChildren().add(button);
+        //gameScreen.setRight(buttonHolder);
+        scene = new Scene(gameScreen,width + 50,height);
         
         // START
         game = new Game();
-        game.userInput(scene);
+        game.userInput(canvas);
         tick();
         
         stage.setTitle("A star demo");
@@ -82,7 +86,7 @@ public class Main extends Application
            //TIMER     
             public void handle(long now) 
             {
-                if(running == true ) 
+                if(running)
                 { 
                     stage.setScene(scene);
                     
